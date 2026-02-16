@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solarpunk: Solución Ecológica y Post-Capitalista</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;500;700&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
+
+    <!-- Estilos Personalizados -->
+    <style>
+        /* Chosen Palette: Solarpunk Vitality
+           Base: #FAF9F6 (Off-white/Cream)
+           Primary Green: #4CAF50 (Nature)
+           Accent Yellow: #FFEB3B (Solar)
+           Accent Cyan: #00BCD4 (Hydro/Tech)
+           Text Dark: #263238 (Dark Blue Grey)
+           Highlight: #FF9800 (Sunset Orange)
+        */
+
+        :root {
+            --color-bg: #FAF9F6;
+            --color-green: #4CAF50;
+            --color-green-dark: #2E7D32;
+            --color-yellow: #FFEB3B;
+            --color-cyan: #00BCD4;
+            --color-text: #263238;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            line-height: 1.6;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Comfortaa', cursive;
+        }
+
+        /* Estilos de Contenedores de Gráficos (MANDATORY) */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+
+        @media (max-width: 640px) {
+            .chart-container {
+                height: 300px;
+            }
+        }
+
+        /* Utilidades Visuales */
+        .card {
+            background-color: white;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #2E7D32 0%, #00BCD4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-active {
+            border-bottom: 3px solid #4CAF50;
+            color: #2E7D32;
+        }
+
+        /* Interactividad */
+        .interactive-btn {
+            background-color: #e0f2f1;
+            color: #00695c;
+            border: 1px solid #b2dfdb;
+            transition: all 0.2s;
+        }
+        .interactive-btn:hover, .interactive-btn.active {
+            background-color: #4CAF50;
+            color: white;
+            border-color: #2E7D32;
+        }
+    </style>
+
+    <!-- Application Structure Plan:
+         1. Hero: Title and Core Definition (Rejecting Capitalism).
+         2. Navigation: Sticky nav for thematic sections.
+         3. Section 1: Energy & Autonomy (The Shift from Corporate to Community).
+         4. Section 2: Urban Regeneration (Heat Islands vs Green Cities).
+         5. Section 3: Post-Capitalist Economy (Radar Chart: GDP vs Well-being).
+         6. Section 4: Circular Lifecycle (Obsolescence vs Repair).
+         7. Section 5: Future Projection (Line Chart).
+         Interactions: Filter buttons for charts, dynamic text updates, hover effects.
+    -->
+    
+    <!-- Visualization & Content Choices:
+         - Energy: Doughnut Chart (Show composition of decentralized mix).
+         - Urban: Bar Chart (Compare temperatures).
+         - Economy: Radar Chart (Compare multi-dimensional metrics).
+         - Lifecycle: Stacked Bar (Compare lifespan years).
+         - Future: Line Chart (Trends).
+         - Diagrams: HTML/CSS Grid (No SVG/Mermaid).
+    -->
+    
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="bg-[#FAF9F6]">
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-md shadow-sm border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex-shrink-0 flex items-center">
+                    <span class="text-2xl font-bold text-green-600 font-['Comfortaa']">☀️ Solarpunk</span>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#intro" class="text-gray-600 hover:text-green-600 px-3 py-2 text-sm font-medium transition-colors">Manifiesto</a>
+                    <a href="#energy" class="text-gray-600 hover:text-green-600 px-3 py-2 text-sm font-medium transition-colors">Energía</a>
+                    <a href="#economy" class="text-gray-600 hover:text-green-600 px-3 py-2 text-sm font-medium transition-colors">Economía</a>
+                    <a href="#urban" class="text-gray-600 hover:text-green-600 px-3 py-2 text-sm font-medium transition-colors">Ciudad</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header id="intro" class="relative overflow-hidden bg-gradient-to-br from-green-50 to-cyan-50 py-16 sm:py-24">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+            <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight mb-6">
+                <span class="block text-gray-800">El Futuro es</span>
+                <span class="gradient-text">Verde, Descentralizado y Post-Capitalista</span>
+            </h1>
+            <p class="mt-4 max-w-2xl mx-auto text-xl text-gray-600">
+                Solarpunk no es solo estética; es una respuesta política. Rechaza el crecimiento infinito y la explotación corporativa en favor de la <strong>suficiencia regenerativa</strong>, los bienes comunes y la alta tecnología al servicio de la vida.
+            </p>
+            <div class="mt-8 flex justify-center gap-4">
+                <div class="bg-white p-4 rounded-full shadow-sm border border-green-200 flex items-center gap-2">
+                    <span class="text-2xl">🌱</span>
+                    <span class="font-bold text-gray-700">Ecología Profunda</span>
+                </div>
+                <div class="bg-white p-4 rounded-full shadow-sm border border-cyan-200 flex items-center gap-2">
+                    <span class="text-2xl">⚡</span>
+                    <span class="font-bold text-gray-700">Energía Libre</span>
+                </div>
+                <div class="bg-white p-4 rounded-full shadow-sm border border-yellow-200 flex items-center gap-2">
+                    <span class="text-2xl">🤝</span>
+                    <span class="font-bold text-gray-700">Ayuda Mutua</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-24">
+
+        <!-- SECTION 1: ENERGY & AUTONOMY -->
+        <section id="energy" class="scroll-mt-24">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div>
+                    <div class="inline-block px-3 py-1 mb-4 text-xs font-semibold tracking-wider text-cyan-900 uppercase bg-cyan-100 rounded-full">
+                        Infraestructura
+                    </div>
+                    <h2 class="text-3xl font-bold text-gray-900 mb-4">De la Red Corporativa a la Microrred Comunitaria</h2>
+                    <p class="text-lg text-gray-600 mb-6">
+                        El capitalismo energético centraliza beneficios y externaliza contaminación. El modelo Solarpunk propone <strong>microrredes distribuidas</strong> donde cada edificio es productor y batería. La energía se convierte en un bien común, no en una mercancía.
+                    </p>
+                    
+                    <!-- Interactive Controls -->
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+                        <h4 class="font-bold text-sm text-gray-500 uppercase mb-3">Visualizar Escenario:</h4>
+                        <div class="flex flex-wrap gap-2" id="energy-controls">
+                            <button class="interactive-btn px-4 py-2 rounded-lg text-sm font-medium active" onclick="updateEnergy('solarpunk')">Modelo Solarpunk</button>
+                            <button class="interactive-btn px-4 py-2 rounded-lg text-sm font-medium" onclick="updateEnergy('capitalist')">Modelo Industrial Actual</button>
+                        </div>
+                        <p id="energy-desc" class="mt-4 text-sm text-gray-500 italic">
+                            Mostrando: Una red resiliente basada en diversidad de fuentes renovables locales y propiedad comunitaria.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Visualization: Doughnut Chart -->
+                <div class="card p-6 border-t-4 border-cyan-400">
+                    <h3 class="text-lg font-bold text-center mb-2">Composición del Mix Energético</h3>
+                    <div class="chart-container">
+                        <canvas id="energyChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: URBAN REGENERATION -->
+        <section id="urban" class="scroll-mt-24">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <div class="inline-block px-3 py-1 mb-4 text-xs font-semibold tracking-wider text-green-900 uppercase bg-green-100 rounded-full">
+                    Urbanismo
+                </div>
+                <h2 class="text-3xl font-bold text-gray-900">Ciudades que Respiran</h2>
+                <p class="mt-4 text-lg text-gray-600">
+                    Transformar la "jungla de concreto" en un ecosistema simbiótico. La integración de biomasa en la arquitectura no es decorativa; es una tecnología funcional para reducir la temperatura y limpiar el aire sin consumo eléctrico masivo.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Data Visualization -->
+                <div class="md:col-span-2 card p-6 border-t-4 border-green-500">
+                    <h3 class="text-lg font-bold mb-4">Efecto Isla de Calor: Comparativa de Temperatura (°C)</h3>
+                    <div class="chart-container">
+                        <canvas id="tempChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Info Cards (HTML/CSS Diagrams) -->
+                <div class="space-y-4">
+                    <div class="card p-5 border-l-4 border-yellow-400 bg-yellow-50/50">
+                        <h4 class="font-bold text-gray-800 text-lg">☀️ Fachadas Productivas</h4>
+                        <p class="text-sm text-gray-600 mt-2">
+                            Los rascacielos no son espejos de ego corporativo, sino granjas verticales que proveen alimento local y aislamiento térmico.
+                        </p>
+                    </div>
+                    <div class="card p-5 border-l-4 border-cyan-400 bg-cyan-50/50">
+                        <h4 class="font-bold text-gray-800 text-lg">💧 Gestión Hídrica</h4>
+                        <p class="text-sm text-gray-600 mt-2">
+                            Sistemas de captación de lluvia y bio-filtros en cada calle reemplazan el alcantarillado industrial oculto.
+                        </p>
+                    </div>
+                    <div class="card p-5 border-l-4 border-green-400 bg-green-50/50">
+                        <h4 class="font-bold text-gray-800 text-lg">🚶 Movilidad Suave</h4>
+                        <p class="text-sm text-gray-600 mt-2">
+                            Prioridad absoluta al peatón y la bicicleta. El coche privado se vuelve obsoleto, reemplazado por transporte público automatizado.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: ECONOMY -->
+        <section id="economy" class="scroll-mt-24 bg-white rounded-3xl p-8 shadow-xl border border-gray-100">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
+                <!-- Visualization: Radar Chart -->
+                <div class="order-2 lg:order-1">
+                    <div class="chart-container">
+                        <canvas id="radarChart"></canvas>
+                    </div>
+                    <div class="mt-6 text-center">
+                        <p class="text-xs text-gray-400">Datos ilustrativos basados en proyecciones de Economía Ecológica.</p>
+                    </div>
+                </div>
+
+                <!-- Content -->
+                <div class="order-1 lg:order-2 flex flex-col justify-center">
+                    <div class="inline-block w-fit px-3 py-1 mb-4 text-xs font-semibold tracking-wider text-purple-900 uppercase bg-purple-100 rounded-full">
+                        Economía Post-Capitalista
+                    </div>
+                    <h2 class="text-3xl font-bold text-gray-900 mb-4">Redefiniendo el "Éxito"</h2>
+                    <p class="text-lg text-gray-600 mb-6">
+                        El capitalismo mide el éxito mediante el PIB, una métrica ciega a la destrucción ambiental y el sufrimiento social. El Solarpunk adopta métricas de <strong>prosperidad real</strong>.
+                    </p>
+                    
+                    <ul class="space-y-4">
+                        <li class="flex items-start">
+                            <span class="flex-shrink-0 h-6 w-6 rounded-full bg-red-100 text-red-600 flex items-center justify-center font-bold text-xs mt-1">✕</span>
+                            <div class="ml-4">
+                                <h4 class="text-md font-bold text-gray-800">Obsolescencia Programada</h4>
+                                <p class="text-sm text-gray-500">Diseñar para romper y vender más.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="flex-shrink-0 h-6 w-6 rounded-full bg-green-100 text-green-600 flex items-center justify-center font-bold text-xs mt-1">✓</span>
+                            <div class="ml-4">
+                                <h4 class="text-md font-bold text-gray-800">Derecho a Reparar (Maker Culture)</h4>
+                                <p class="text-sm text-gray-500">Diseño modular, código abierto e impresión 3D local para extender la vida útil indefinidamente.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: LIFECYCLE & FUTURE -->
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Lifespan Chart -->
+            <div class="card p-6">
+                <h3 class="text-xl font-bold mb-2">Ciclo de Vida del Producto</h3>
+                <p class="text-sm text-gray-500 mb-6">Años de uso promedio antes del descarte.</p>
+                <div class="chart-container">
+                    <canvas id="lifespanChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Future Trends Chart -->
+            <div class="card p-6 bg-gray-900 text-white">
+                <h3 class="text-xl font-bold mb-2 text-yellow-400">Proyección de Transición</h3>
+                <p class="text-sm text-gray-400 mb-6">Reducción de dependencia global vs. Autonomía local.</p>
+                <div class="chart-container">
+                    <canvas id="trendChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Call to Action / Conclusion -->
+        <section class="text-center py-12 bg-green-50 rounded-3xl border border-green-100">
+            <h2 class="text-3xl font-bold text-green-800 mb-4">La Utopía es un Trabajo en Progreso</h2>
+            <p class="max-w-2xl mx-auto text-green-700 mb-8">
+                El futuro Solarpunk no llega solo; se construye plantando jardines, hackeando tecnología obsoleta, organizando cooperativas y exigiendo lo imposible.
+            </p>
+            <div class="flex justify-center gap-4">
+                <button class="bg-green-600 text-white px-6 py-3 rounded-lg font-bold shadow-lg hover:bg-green-700 transition transform hover:-translate-y-1">
+                    Unirse a un Huerto Urbano
+                </button>
+                <button class="bg-white text-green-600 border-2 border-green-600 px-6 py-3 rounded-lg font-bold shadow hover:bg-green-50 transition transform hover:-translate-y-1">
+                    Descargar Planos Open Source
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-gray-800 text-gray-300 py-12 border-t border-gray-700">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="font-['Comfortaa'] text-2xl text-white mb-4">☀️ Solarpunk</p>
+            <p class="text-sm max-w-md mx-auto">
+                Una visualización de futuros posibles. Datos simulados para propósitos educativos sobre alternativas ecológicas y post-capitalistas.
+            </p>
+            <p class="mt-8 text-xs text-gray-500">
+                Generado con Canvas AI • No SVG • No Mermaid
+            </p>
+        </div>
+    </footer>
+
+    <!-- Script Logic -->
+    <script>
+        // --- CONFIGURACIÓN GLOBAL ---
+        Chart.defaults.font.family = "'Nunito', sans-serif";
+        Chart.defaults.color = '#455A64';
+
+        // --- UTILS: LABEL WRAPPING ---
+        function wrapLabel(label) {
+            const MAX_LENGTH = 16;
+            if (label.length <= MAX_LENGTH) return label;
+            const words = label.split(' ');
+            const lines = [];
+            let currentLine = words[0];
+
+            for (let i = 1; i < words.length; i++) {
+                if ((currentLine + " " + words[i]).length <= MAX_LENGTH) {
+                    currentLine += " " + words[i];
+                } else {
+                    lines.push(currentLine);
+                    currentLine = words[i];
+                }
+            }
+            lines.push(currentLine);
+            return lines;
+        }
+
+        const commonTooltip = {
+            callbacks: {
+                title: function(tooltipItems) {
+                    const item = tooltipItems[0];
+                    const label = item.chart.data.labels[item.dataIndex];
+                    return Array.isArray(label) ? label.join(' ') : label;
+                }
+            }
+        };
+
+        // --- DATA SETS ---
+        const energyData = {
+            solarpunk: {
+                labels: ['Solar Comunitaria', 'Eólica DIY/Local', 'Biogás Urbano', 'Hidroeléctrica Micro', 'Fósiles'],
+                data: [45, 25, 20, 10, 0],
+                desc: "Mostrando: Una red resiliente basada en diversidad de fuentes renovables locales y propiedad comunitaria.",
+                colors: ['#FFEB3B', '#4FC3F7', '#81C784', '#4DB6AC', '#CFD8DC']
+            },
+            capitalist: {
+                labels: ['Gas Natural', 'Carbón/Petróleo', 'Nuclear Centralizada', 'Renovables Corp.', 'Solar Local'],
+                data: [40, 30, 15, 12, 3],
+                desc: "Mostrando: Alta dependencia de combustibles fósiles y generación centralizada con fines de lucro.",
+                colors: ['#EF5350', '#5D4037', '#7E57C2', '#29B6F6', '#FFF176']
+            }
+        };
+
+        // --- CHART 1: ENERGY MIX (DOUGHNUT) ---
+        const ctxEnergy = document.getElementById('energyChart').getContext('2d');
+        let currentEnergyMode = 'solarpunk';
+
+        const energyChart = new Chart(ctxEnergy, {
+            type: 'doughnut',
+            data: {
+                labels: energyData.solarpunk.labels.map(wrapLabel),
+                datasets: [{
+                    data: energyData.solarpunk.data,
+                    backgroundColor: energyData.solarpunk.colors,
+                    borderWidth: 0,
+                    hoverOffset: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '65%',
+                plugins: {
+                    tooltip: commonTooltip,
+                    legend: {
+                        position: 'right',
+                        labels: { usePointStyle: true, boxWidth: 10 }
+                    }
+                }
+            }
+        });
+
+        // Function to update Energy Chart
+        window.updateEnergy = function(mode) {
+            currentEnergyMode = mode;
+            const data = energyData[mode];
+            
+            // Update Data
+            energyChart.data.labels = data.labels.map(wrapLabel);
+            energyChart.data.datasets[0].data = data.data;
+            energyChart.data.datasets[0].backgroundColor = data.colors;
+            energyChart.update();
+
+            // Update Text
+            document.getElementById('energy-desc').textContent = data.desc;
+
+            // Update Buttons
+            const buttons = document.querySelectorAll('#energy-controls button');
+            buttons.forEach(btn => {
+                if (btn.textContent.toLowerCase().includes(mode === 'solarpunk' ? 'solarpunk' : 'industrial')) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+        };
+
+        // --- CHART 2: URBAN TEMP (BAR) ---
+        const ctxTemp = document.getElementById('tempChart').getContext('2d');
+        new Chart(ctxTemp, {
+            type: 'bar',
+            data: {
+                labels: ['Asfalto Sin Sombra', 'Parque Urbano', 'Ciudad Solarpunk'].map(wrapLabel),
+                datasets: [{
+                    label: 'Temperatura Superficial (°C)',
+                    data: [45, 30, 26],
+                    backgroundColor: ['#FF7043', '#81C784', '#26A69A'],
+                    borderRadius: 8,
+                    barThickness: 50
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    tooltip: commonTooltip,
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: '#ECEFF1' },
+                        title: { display: true, text: 'Grados Celsius' }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+
+        // --- CHART 3: ECONOMY RADAR ---
+        const ctxRadar = document.getElementById('radarChart').getContext('2d');
+        new Chart(ctxRadar, {
+            type: 'radar',
+            data: {
+                labels: ['PIB / Lucro', 'Bienestar Mental', 'Biodiversidad', 'Tiempo Libre', 'Igualdad', 'Consumo'],
+                datasets: [{
+                    label: 'Capitalismo Tardío',
+                    data: [90, 30, 20, 20, 30, 95],
+                    fill: true,
+                    backgroundColor: 'rgba(239, 83, 80, 0.2)',
+                    borderColor: '#EF5350',
+                    pointBackgroundColor: '#EF5350'
+                }, {
+                    label: 'Economía Solarpunk',
+                    data: [20, 90, 95, 85, 90, 30],
+                    fill: true,
+                    backgroundColor: 'rgba(76, 175, 80, 0.2)',
+                    borderColor: '#4CAF50',
+                    pointBackgroundColor: '#4CAF50'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        angleLines: { color: '#CFD8DC' },
+                        grid: { color: '#CFD8DC' },
+                        pointLabels: {
+                            font: { size: 11, weight: 'bold' }
+                        },
+                        suggestedMin: 0,
+                        suggestedMax: 100
+                    }
+                },
+                plugins: {
+                    tooltip: commonTooltip
+                }
+            }
+        });
+
+        // --- CHART 4: LIFESPAN (STACKED HORIZONTAL BAR) ---
+        const ctxLife = document.getElementById('lifespanChart').getContext('2d');
+        new Chart(ctxLife, {
+            type: 'bar',
+            indexAxis: 'y',
+            data: {
+                labels: ['Smartphone', 'Mobiliario', 'Ropa', 'Electrodomésticos'].map(wrapLabel),
+                datasets: [
+                    {
+                        label: 'Vida Útil Actual (Obsolescencia)',
+                        data: [2.5, 10, 2, 7],
+                        backgroundColor: '#B0BEC5'
+                    },
+                    {
+                        label: 'Ganancia por Reparabilidad',
+                        data: [8, 40, 8, 15],
+                        backgroundColor: '#FFEB3B' // Solar Yellow extension
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    tooltip: commonTooltip,
+                    title: { display: true, text: 'Extensión de Vida Útil mediante Reparación' }
+                },
+                scales: {
+                    x: {
+                        stacked: true,
+                        title: { display: true, text: 'Años' }
+                    },
+                    y: { stacked: true }
+                }
+            }
+        });
+
+        // --- CHART 5: TRENDS (LINE) ---
+        const ctxTrend = document.getElementById('trendChart').getContext('2d');
+        new Chart(ctxTrend, {
+            type: 'line',
+            data: {
+                labels: ['2025', '2030', '2035', '2040', '2045', '2050'],
+                datasets: [
+                    {
+                        label: 'Dependencia Global (Cadenas de Suministro)',
+                        data: [100, 90, 70, 45, 25, 10],
+                        borderColor: '#FF5252',
+                        backgroundColor: 'transparent',
+                        borderDash: [5, 5],
+                        tension: 0.4
+                    },
+                    {
+                        label: 'Autonomía Comunitaria',
+                        data: [5, 15, 35, 60, 80, 95],
+                        borderColor: '#69F0AE',
+                        backgroundColor: 'rgba(105, 240, 174, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    tooltip: commonTooltip,
+                    legend: {
+                        labels: { color: '#FFF' }
+                    }
+                },
+                scales: {
+                    y: {
+                        grid: { color: '#37474F' },
+                        ticks: { color: '#B0BEC5' }
+                    },
+                    x: {
+                        grid: { color: '#37474F' },
+                        ticks: { color: '#B0BEC5' }
+                    }
+                }
+            }
+        });
+
+    </script>
+</body>
+</html>
